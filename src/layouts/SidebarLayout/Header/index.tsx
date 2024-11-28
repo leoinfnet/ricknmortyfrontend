@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 
 import {
   Box,
@@ -18,6 +18,7 @@ import CloseTwoToneIcon from '@mui/icons-material/CloseTwoTone';
 import HeaderButtons from './Buttons';
 import HeaderUserbox from './Userbox';
 import HeaderMenu from './Menu';
+import { Toaster } from 'react-hot-toast';
 
 const HeaderWrapper = styled(Box)(
   ({ theme }) => `
@@ -43,7 +44,9 @@ function Header() {
   const theme = useTheme();
 
   return (
-    <HeaderWrapper
+
+
+  <HeaderWrapper
       display="flex"
       alignItems="center"
       sx={{
@@ -62,7 +65,9 @@ function Header() {
               )}`
       }}
     >
-      <Stack
+    <Toaster/>
+
+    <Stack
         direction="row"
         divider={<Divider orientation="vertical" flexItem />}
         alignItems="center"
