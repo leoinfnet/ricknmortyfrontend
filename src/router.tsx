@@ -6,6 +6,7 @@ import SidebarLayout from 'src/layouts/SidebarLayout';
 
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import UsuarioForm from './content/management/UsuarioForm';
+import UsuarioFormValidacao from './content/management/UsuarioFormValidacao';
 
 const Loader = (Component) => (props) =>
   (
@@ -54,6 +55,10 @@ const routes: RouteObject[] = [
       {
         path: "new-user",
         element: <UsuarioForm />
+      },
+      {
+        path: "new-user-validacao",
+        element: <UsuarioFormValidacao />
       },
 
 

@@ -9,8 +9,78 @@ import DefaultSelect from '../../../components/DefaultSelect';
 import SpeciesService from '../../../services/SpeciesService';
 import UsuarioService from '../../../services/PersonagemService';
 import toast, { Toaster } from 'react-hot-toast';
+import * as yup from 'yup';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 
-const UsuarioForm:React.FC = () => {
+
+const UsuarioFormValidacao:React.FC = () => {
+
+
+  const validateCPF = (value: string) => {
+    // Remover caracteres não numéricos (como pontos e traços)
+    const cleanedValue = value.replace(/\D/g, '');
+
+    // CPF deve ter exatamente 11 dígitos
+    if (cleanedValue.length !== 11) {
+      return false;
+    }
+
+    // Validação de CPF padrão (todos os números iguais, como "111.111.111-11" ou "000.000.000-00")
+    if (/^(\d)\1{10}$/.test(cleanedValue)) {
+      return false;
+    }
+
+    // Calculando o primeiro dígito verificador
+    let sum = 0;
+    for (let i = 0; i < 9; i++) {
+      sum += parseInt(cleanedValue.charAt(i)) * (10 - i);
+    }
+    let firstVerifier = (sum % 11 < 2) ? 0 : 11 - (sum % 11);
+
+    // Calculando o segundo dígito verificador
+    sum = 0;
+    for (let i = 0; i < 10; i++) {
+      sum += parseInt(cleanedValue.charAt(i)) * (11 - i);
+    }
+    let secondVerifier = (sum % 11 < 2) ? 0 : 11 - (sum % 11);
+
+    // Verifica se os dígitos verificadores calculados são iguais aos do CPF
+    return cleanedValue.charAt(9) === firstVerifier.toString() && cleanedValue.charAt(10) === secondVerifier.toString();
+  };
+
+
+  interface IFormInput{
+    name: string;
+    gender: "",
+    status: "Unknow",
+    location: "",
+    species: "",
+    type: "",
+    episodeCount: ""
+  }
+  const schema = yup.object().shape({
+    name: yup.string().required("O nome é obrigatório")
+      .min(3, "O nome deve ter mais de 3 letras.").max(20, "O nome deve ter até 20 letras."),
+    //type: yup.string().email("O campo deve ser um email válido.")
+    type: yup.string().required("O cpf é obrigatório").test('is-valid-cpf','O cpf é inválido.', validateCPF)
+  });
+  const {
+    register,
+    handleSubmit,
+    formState: {errors},
+  } = useForm({resolver: yupResolver(schema)})
+
+  const onSubmit = (data:IFormInput) =>{
+    let usuarioService = new UsuarioService();
+
+    usuarioService.save(formData).then((reponse =>{
+      toastSucesso();
+    })).catch((error) =>{
+      toastError()
+    })
+  }
+
   const toastSucesso = () => toast.success("Usuario cadastrado com sucesso",{position: 'top-center'})
   const toastError = () => toast.error("Ops, algo de errado aconteceu.",{position: 'top-center'})
 
@@ -34,6 +104,7 @@ const UsuarioForm:React.FC = () => {
     episodeCount: ""
   })
 
+
   const handleChangeNome = (e) =>{
     console.log(e.target);
   }
@@ -41,7 +112,8 @@ const UsuarioForm:React.FC = () => {
     const {name, value} = e.target;
     setFormData((prevState) => ({ ...prevState, [name]: value }));
   }
-  const handleSubmit = (event) =>{
+  //Não usaremos mais esse campo.
+  const hadleSubmit = (event) =>{
     event.preventDefault();
     let usuarioService = new UsuarioService();
     usuarioService.save(formData).then((reponse =>{
@@ -77,7 +149,7 @@ const UsuarioForm:React.FC = () => {
             <CardContent>
               <Box
                 component="form"
-                onSubmit={handleSubmit}
+                onSubmit={handleSubmit(onSubmit)}
 
                 sx={{
                   '& .MuiTextField-root': { m: 1, width: '30ch' }
@@ -92,8 +164,10 @@ const UsuarioForm:React.FC = () => {
                     id="name"
                     label = "Nome"
                     name = "name"
-                    value={formData.name}
-                    onChange={handleChange}
+                    {...register("name")}
+                    error={!! errors.name }
+                    helperText={errors.name?.message}
+
                   />
 
                   <TextField
@@ -144,8 +218,10 @@ const UsuarioForm:React.FC = () => {
                     id="type"
                     label="Type"
                     name='type'
-                    value={formData.type}
-                    onChange={handleChange}
+                    {...register("type")}
+                    error={!! errors.type }
+                    helperText={errors.type?.message}
+
                   />
                 </div>
                 <div>
@@ -183,4 +259,4 @@ const UsuarioForm:React.FC = () => {
   </>
   );
 }
-export default  UsuarioForm;
+export default  UsuarioFormValidacao;

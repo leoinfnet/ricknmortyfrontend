@@ -3,6 +3,7 @@ import PageTitleWrapper from 'src/components/PageTitleWrapper';
 import { Grid, Container } from '@mui/material';
 import Footer from 'src/components/Footer';
 import PageHeader from './PageHeader';
+import UsersTable from './UsersTable';
 
 
 function UsersList() {
@@ -23,6 +24,7 @@ function UsersList() {
           spacing={3}
         >
           <Grid item xs={12}>
+            <UsersTable />
           </Grid>
         </Grid>
       </Container>

@@ -23,6 +23,16 @@ const PageHeader:React.FC = () =>{
         Cadastrar Usuário
         </Button>
       </Grid>
+      <Grid item>
+        <Button
+          sx={{ mt: { xs: 2, md: 0 } }}
+          variant="contained"
+          onClick={() => navigate("/management/new-user-validacao")}
+          startIcon={<AddTwoToneIcon fontSize="small" />}
+        >
+          Cadastrar Usuário Com validacao
+        </Button>
+      </Grid>
     </Grid>
   );
 }
