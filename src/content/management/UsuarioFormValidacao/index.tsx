@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import PageTitleWrapper from '../../../components/PageTitleWrapper';
 import PageHeader from './PageHeader';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, Card, CardContent, CardHeader, Container, Divider, Grid, MenuItem, Select } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import LocationsSelect from '../../../components/LocationsSelect';
@@ -10,12 +10,9 @@ import SpeciesService from '../../../services/SpeciesService';
 import UsuarioService from '../../../services/PersonagemService';
 import toast, { Toaster } from 'react-hot-toast';
 import * as yup from 'yup';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-
-
 const UsuarioFormValidacao:React.FC = () => {
-
 
   const validateCPF = (value: string) => {
     // Remover caracteres não numéricos (como pontos e traços)
@@ -63,7 +60,12 @@ const UsuarioFormValidacao:React.FC = () => {
     name: yup.string().required("O nome é obrigatório")
       .min(3, "O nome deve ter mais de 3 letras.").max(20, "O nome deve ter até 20 letras."),
     //type: yup.string().email("O campo deve ser um email válido.")
-    type: yup.string().required("O cpf é obrigatório").test('is-valid-cpf','O cpf é inválido.', validateCPF)
+    type: yup.string(),//.required("O cpf é obrigatório").test('is-valid-cpf','O cpf é inválido.', validateCPF),
+    gender: yup.string(),
+    status: yup.string(),
+    episodeCount: yup.string(),
+    location: yup.string(),
+    species: yup.string()
   });
   const {
     register,
@@ -73,7 +75,7 @@ const UsuarioFormValidacao:React.FC = () => {
 
   const onSubmit = (data:IFormInput) =>{
     let usuarioService = new UsuarioService();
-
+    console.log(data);
     usuarioService.save(formData).then((reponse =>{
       toastSucesso();
     })).catch((error) =>{
@@ -169,14 +171,12 @@ const UsuarioFormValidacao:React.FC = () => {
                     helperText={errors.name?.message}
 
                   />
-
                   <TextField
                     id = "gender"
                     select
                     label = "Gender"
-                    value = {formData.gender}
-                    onChange={handleChange}
                     name="gender"
+                    {...register('gender')}
                     >
                     {gender.map((option) => (
                       <MenuItem key={option.value} value={option.value}>
@@ -190,9 +190,8 @@ const UsuarioFormValidacao:React.FC = () => {
                     id = "status"
                     select
                     label = "Status"
-                    value = {formData.status}
-                    onChange={handleChange}
-                    name="status"
+
+                    {...register('status')}
                   >
                     {status.map((option) => (
                       <MenuItem key={option.value} value={option.value}>
@@ -204,13 +203,15 @@ const UsuarioFormValidacao:React.FC = () => {
 
                 </div>
                 <div>
-                  <LocationsSelect name="location" value={formData.location} handleChange={handleChange} />
+                  <LocationsSelect name="location" value={formData.location} handleChange={handleChange} register={register} />
 
                   <DefaultSelect name="species" value={formData.species}
                                  label="Especie"
                                  id="species"
                                  handlechange={handleChange}
                                  service={new SpeciesService()}
+                                 {...register('species')}
+                    register={register}
                   />
 
                   <TextField
@@ -231,10 +232,8 @@ const UsuarioFormValidacao:React.FC = () => {
                     id="episodeCount"
                     label="Quantidade de Episodios"
                     name='episodeCount'
-                    value={formData.episodeCount}
-                    onChange={handleChange}
+                    {...register('episodeCount')}
                     type="number"
-
                   />
                 </div>
 

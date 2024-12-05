@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { Personagem } from '../../models/personagem';
 
 class UsuarioService {
   serverPath = "/api/characters";
@@ -14,6 +15,18 @@ class UsuarioService {
         "size": limit
       }
     })
+  }
+
+  delete(id){
+    return axios.delete("http://localhost:8080" + this.serverPath + "/" + id)
+  }
+
+  getById(id:number){
+    return axios.get<Personagem>(`http://localhost:8080${this.serverPath}/${id}`)
+  }
+
+  update(id:number,personagem){
+    return axios.put(`http://localhost:8080${this.serverPath}/${id}`,personagem)
   }
 }
 export default UsuarioService;

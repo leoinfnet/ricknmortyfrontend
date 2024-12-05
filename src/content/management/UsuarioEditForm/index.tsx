@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import PageTitleWrapper from '../../../components/PageTitleWrapper';
 import PageHeader from './PageHeader';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, Card, CardContent, CardHeader, Container, Divider, Grid, MenuItem, Select } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import LocationsSelect from '../../../components/LocationsSelect';
@@ -9,8 +9,29 @@ import DefaultSelect from '../../../components/DefaultSelect';
 import SpeciesService from '../../../services/SpeciesService';
 import UsuarioService from '../../../services/PersonagemService';
 import toast, { Toaster } from 'react-hot-toast';
+import { useParams } from 'react-router';
 
-const UsuarioForm:React.FC = () => {
+const UsuarioEditForm:React.FC = () => {
+  let usuarioService = new UsuarioService();
+  const {id} = useParams();
+  const [idPersonagem, setIdPersonagem ] = useState(null)
+  useEffect(() => {
+    usuarioService.getById(parseInt(id)).then((response)=>{
+      let personagem = response.data;
+      setIdPersonagem(personagem.id)
+      console.log(personagem);
+      setFormData({
+        name: personagem.name,
+        episodeCount: personagem.episodeCount,
+        gender: "",
+        location: '',
+        species: '',
+        status: '',
+        type: ''
+      })
+
+    })
+  }, []);
   const toastSucesso = () => toast.success("Usuario cadastrado com sucesso",{position: 'top-center'})
   const toastError = () => toast.error("Ops, algo de errado aconteceu.",{position: 'top-center'})
 
@@ -31,7 +52,7 @@ const UsuarioForm:React.FC = () => {
     location: "",
     species: "",
     type: "",
-    episodeCount: ""
+    episodeCount: 0
   })
 
   const handleChangeNome = (e) =>{
@@ -43,8 +64,8 @@ const UsuarioForm:React.FC = () => {
   }
   const handleSubmit = (event) =>{
     event.preventDefault();
-    let usuarioService = new UsuarioService();
-    usuarioService.save(formData).then((reponse =>{
+
+    usuarioService.update(idPersonagem,formData).then((reponse =>{
       console.log("Salvo com sucesso");
       toastSucesso();
     })).catch((error) =>{
@@ -183,4 +204,4 @@ const UsuarioForm:React.FC = () => {
   </>
   );
 }
-export default  UsuarioForm;
+export default  UsuarioEditForm;

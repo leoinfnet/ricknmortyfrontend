@@ -1,7 +1,7 @@
 import { MenuItem, TextField } from '@mui/material';
 import { useEffect, useState } from 'react';
 
-const DefaultSelect = ({name,value,label,id,handlechange,service}) =>{
+const DefaultSelect = ({name,value,label,id,handlechange,service,register}) =>{
   const [values, setValues] = useState([]);
   useEffect(() => {
     service.getAll().then((response) =>{
@@ -15,6 +15,7 @@ const DefaultSelect = ({name,value,label,id,handlechange,service}) =>{
       name={name}
       value={value}
       onChange={handlechange}
+
     >
     {values.map((option) => (
       <MenuItem key={option.name} value={option.name}>

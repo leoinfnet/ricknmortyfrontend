@@ -7,6 +7,7 @@ import SidebarLayout from 'src/layouts/SidebarLayout';
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import UsuarioForm from './content/management/UsuarioForm';
 import UsuarioFormValidacao from './content/management/UsuarioFormValidacao';
+import UsuarioEditForm from './content/management/UsuarioEditForm';
 
 const Loader = (Component) => (props) =>
   (
@@ -18,16 +19,6 @@ const Loader = (Component) => (props) =>
 // Pages
 const UsersList = Loader(lazy(() => import('src/content/management/UsersList')));
 const UsersForm = Loader(lazy(() => import('src/content/management/UsersList')));
-
-
-
-// Applications
-
-
-// Status
-
-
-
 
 const routes: RouteObject[] = [
   {
@@ -59,6 +50,10 @@ const routes: RouteObject[] = [
       {
         path: "new-user-validacao",
         element: <UsuarioFormValidacao />
+      },
+      {
+        path: "edit-user/:id",
+        element: <UsuarioEditForm />
       },
 
 
