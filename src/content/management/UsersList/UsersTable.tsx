@@ -22,6 +22,7 @@ import DeleteItemConfirmationModal from '../../../components/DeleteItemConfirmat
 import toast from 'react-hot-toast';
 import CharacterModal from './CharacterModal';
 import { useNavigate } from 'react-router';
+import SearchBar from '../../../components/SearchBar';
 
 
 const UsersTable:React.FC = () =>{
@@ -100,7 +101,7 @@ const UsersTable:React.FC = () =>{
     setPage(newPage)
   }
   const openEditPersonagem = (personagem) =>{
-    navigate(`/management/edit-user/${personagem.id}`)
+    navigate(`/management/edit-user/${personagem.id}`,{state:{mode:'update'}})
   }
   const handleLimitChange = (event) =>{
     setPage(0)
@@ -120,7 +121,8 @@ const UsersTable:React.FC = () =>{
   }, []);
   return (
     <Card>
-      <CardHeader title="Personagens" />
+      <CardHeader />
+      <SearchBar setPersonagens={setPersonagens} setTotal={setTotal} />
       <Divider />
       <TableContainer>
         <Table>

@@ -28,5 +28,15 @@ class UsuarioService {
   update(id:number,personagem){
     return axios.put(`http://localhost:8080${this.serverPath}/${id}`,personagem)
   }
+
+  search(formData: { origin: string; nome: string; status: string }) {
+    return axios.get<Personagem[]>("http://localhost:8080/api/characters/search",{
+      headers:{
+        nome: formData.nome,
+        land: formData.origin,
+        status: formData.status
+      }
+    })
+  }
 }
 export default UsuarioService;

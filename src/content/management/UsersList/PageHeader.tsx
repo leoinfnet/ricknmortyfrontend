@@ -27,7 +27,7 @@ const PageHeader:React.FC = () =>{
         <Button
           sx={{ mt: { xs: 2, md: 0 } }}
           variant="contained"
-          onClick={() => navigate("/management/new-user-validacao")}
+          onClick={() => navigate("/management/new-user-validacao", {state:{mode:'create'}})}
           startIcon={<AddTwoToneIcon fontSize="small" />}
         >
           Cadastrar Usuário Com validacao

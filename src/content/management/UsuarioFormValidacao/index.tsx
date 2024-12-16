@@ -2,7 +2,19 @@ import { Helmet } from 'react-helmet-async';
 import PageTitleWrapper from '../../../components/PageTitleWrapper';
 import PageHeader from './PageHeader';
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Card, CardContent, CardHeader, Container, Divider, Grid, MenuItem, Select } from '@mui/material';
+import {
+  Autocomplete,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  Container,
+  Divider,
+  Grid,
+  MenuItem,
+  Select
+} from '@mui/material';
 import TextField from '@mui/material/TextField';
 import LocationsSelect from '../../../components/LocationsSelect';
 import DefaultSelect from '../../../components/DefaultSelect';
@@ -12,7 +24,14 @@ import toast, { Toaster } from 'react-hot-toast';
 import * as yup from 'yup';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useLocation } from 'react-router-dom';
+
+interface TypePayload {
+  id: number;
+  name: string;
+}
 const UsuarioFormValidacao:React.FC = () => {
+  const location = useLocation();
 
   const validateCPF = (value: string) => {
     // Remover caracteres não numéricos (como pontos e traços)
@@ -82,7 +101,6 @@ const UsuarioFormValidacao:React.FC = () => {
       toastError()
     })
   }
-
   const toastSucesso = () => toast.success("Usuario cadastrado com sucesso",{position: 'top-center'})
   const toastError = () => toast.error("Ops, algo de errado aconteceu.",{position: 'top-center'})
 
@@ -105,6 +123,7 @@ const UsuarioFormValidacao:React.FC = () => {
     type: "",
     episodeCount: ""
   })
+  const [value, setValue] = useState(null);
 
 
   const handleChangeNome = (e) =>{
@@ -114,6 +133,21 @@ const UsuarioFormValidacao:React.FC = () => {
     const {name, value} = e.target;
     setFormData((prevState) => ({ ...prevState, [name]: value }));
   }
+  const [inputValue, setInputValue] = useState('');
+  const [options, setOptions] = useState<TypePayload[]>([]);
+
+
+  const handleInputChange = (event: React.ChangeEvent<{}>, value: string) => {
+    setInputValue(value);
+  };
+  const handleSearch = (event: React.ChangeEvent<{}>, value: string) => {
+    // Filtra a lista de criaturas com base no texto digitado
+    console.log("Triggered");
+    if (value.length >= 3) {
+      console.log(value);
+    }
+  };
+
   //Não usaremos mais esse campo.
   const hadleSubmit = (event) =>{
     event.preventDefault();
@@ -214,16 +248,7 @@ const UsuarioFormValidacao:React.FC = () => {
                     register={register}
                   />
 
-                  <TextField
-                    fullWidth
-                    id="type"
-                    label="Type"
-                    name='type'
-                    {...register("type")}
-                    error={!! errors.type }
-                    helperText={errors.type?.message}
 
-                  />
                 </div>
                 <div>
                   <TextField
@@ -235,6 +260,7 @@ const UsuarioFormValidacao:React.FC = () => {
                     {...register('episodeCount')}
                     type="number"
                   />
+
                 </div>
 
                 <Grid container spacing={3}>

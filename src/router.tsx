@@ -8,6 +8,7 @@ import SuspenseLoader from 'src/components/SuspenseLoader';
 import UsuarioForm from './content/management/UsuarioForm';
 import UsuarioFormValidacao from './content/management/UsuarioFormValidacao';
 import UsuarioEditForm from './content/management/UsuarioEditForm';
+import UsuarioFormEditValidacao from './content/management/UsuarioFormEditValidacao';
 
 const Loader = (Component) => (props) =>
   (
@@ -53,7 +54,7 @@ const routes: RouteObject[] = [
       },
       {
         path: "edit-user/:id",
-        element: <UsuarioEditForm />
+        element: <UsuarioFormEditValidacao />
       },
 
 

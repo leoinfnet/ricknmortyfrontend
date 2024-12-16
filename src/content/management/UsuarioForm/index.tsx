@@ -1,16 +1,57 @@
 import { Helmet } from 'react-helmet-async';
 import PageTitleWrapper from '../../../components/PageTitleWrapper';
 import PageHeader from './PageHeader';
-import React, { useState } from 'react';
-import { Box, Button, Card, CardContent, CardHeader, Container, Divider, Grid, MenuItem, Select } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import {
+  Autocomplete,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CardHeader, CircularProgress,
+  Container,
+  Divider,
+  Grid,
+  MenuItem,
+  Select
+} from '@mui/material';
 import TextField from '@mui/material/TextField';
 import LocationsSelect from '../../../components/LocationsSelect';
 import DefaultSelect from '../../../components/DefaultSelect';
 import SpeciesService from '../../../services/SpeciesService';
 import UsuarioService from '../../../services/PersonagemService';
 import toast, { Toaster } from 'react-hot-toast';
+import axios from 'axios';
+import { register } from '../../../serviceWorker';
 
+interface Option{
+  id: number;
+  name: string;
+}
 const UsuarioForm:React.FC = () => {
+  const [options,setOptions] = useState<Option[]>([])
+  const [inputValue, setInputValue] = useState<string>('')
+  useEffect(() => {
+    const fetchOptions = async () =>{
+      try{
+        const response = await axios.get("http://localhost:8080/api/types",
+          {headers:
+              {type: inputValue}
+          });
+        setOptions(response.data);
+      }catch (error){
+        console.log(error);
+      }
+
+    }
+    if(inputValue.length >=5){
+      fetchOptions()
+    }else {
+      setOptions([])
+    }
+
+  }, [inputValue]);
+
   const toastSucesso = () => toast.success("Usuario cadastrado com sucesso",{position: 'top-center'})
   const toastError = () => toast.error("Ops, algo de errado aconteceu.",{position: 'top-center'})
 
@@ -139,14 +180,31 @@ const UsuarioForm:React.FC = () => {
                   {/*               service={new SpeciesService()}*/}
                   {/*/>*/}
 
-                  <TextField
-                    fullWidth
-                    id="type"
-                    label="Type"
-                    name='type'
-                    value={formData.type}
-                    onChange={handleChange}
+
+                  <Autocomplete id="type" value={null}
+                                onInputChange={(_,newInputValue) => setInputValue(newInputValue)}
+                                inputValue={inputValue}
+                                options={options}
+                                getOptionLabel={(option) => option['name']}
+                                noOptionsText="Nenhuma opcao encontrada"
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Selecione uma opcao"
+                          variant="outlined"
+                          InputProps={{
+                           ...params.InputProps,
+                           endAdornment: (
+                             <>
+                               {params.InputProps.endAdornment}
+                             </>
+                           )
+                          }}
+                        />
+                      )}
                   />
+
+
                 </div>
                 <div>
                   <TextField
@@ -158,7 +216,6 @@ const UsuarioForm:React.FC = () => {
                     value={formData.episodeCount}
                     onChange={handleChange}
                     type="number"
-
                   />
                 </div>
 

@@ -19,14 +19,16 @@ const UsuarioEditForm:React.FC = () => {
     usuarioService.getById(parseInt(id)).then((response)=>{
       let personagem = response.data;
       setIdPersonagem(personagem.id)
+      let status
       console.log(personagem);
+
       setFormData({
         name: personagem.name,
         episodeCount: personagem.episodeCount,
-        gender: "",
+        gender: personagem.gender === "Male" ? "MALE" : "FEMALE",
         location: '',
-        species: '',
-        status: '',
+        species: '' ,
+        status: personagem.status,
         type: ''
       })
 
@@ -40,9 +42,9 @@ const UsuarioEditForm:React.FC = () => {
     {value: "FEMALE", label: "Female" }
   ]
   const status = [
-    {value: "ALIVE", label: "Alive" },
-    {value: "DEATH", label: "Death" },
-    {value: 'Unknow', label: "Unknow"}
+    {value: "Alive", label: "Alive" },
+    {value: "Dead", label: "Dead" },
+    {value: 'unknown', label: "Unknown"}
 
   ]
   const [formData, setFormData] = useState({
